@@ -1,0 +1,39 @@
+PUNTO1
+A partir de este requisito, genera un diagrama de flujo en Mermaid 
+que muestre el flujo principal de reserva de una sala, incluyendo 
+las validaciones de solapamiento y capacidad.
+
+Sistema de reservas de salas de reunión:
+- Los usuarios pueden reservar una sala indicando fecha, hora de inicio y duración.
+- No se pueden solapar reservas en la misma sala.
+- El usuario puede cancelar su reserva hasta 1 hora antes.
+- Las salas tienen capacidad máxima.
+
+PUNTO2
+basandote en estos diagramas 
+Vamos a implementar esta API en ASP.NET Core 10 con C#.
+Empieza generando los modelos de dominio necesarios: Sala, Reserva y los DTOs de request/response.
+
+PUNTO2.1
+Ahora implementa el servicio ReservasService con los métodos:
+- CrearReserva: valida solapamiento y capacidad antes de guardar
+- CancelarReserva: valida que falten más de 60 minutos para el inicio
+Usa una lista en memoria por ahora (sin base de datos).
+
+PUNTO2.2
+Genera el ReservasController con endpoints POST /reservas y DELETE /reservas/{id}.
+Maneja los errores con ProblemDetails y devuelve 409 Conflict para solapamientos.
+
+PUNTO2.3
+La validación de cancelación está mal. Debe comparar 
+DateTime.UtcNow con reserva.Inicio, no con reserva.Fin. 
+Corrígelo y explícame qué cambió.
+
+PUNTO3
+Genera tests con Playwright para la API de reservas.
+La API corre en http://localhost:5000.
+Necesito tests para:
+1. Crear una reserva correctamente (201)
+2. Intentar crear una reserva solapada (409)
+3. Cancelar una reserva con más de 60 minutos de antelación (200)
+4. Intentar cancelar una reserva con menos de 60 minutos (400)
