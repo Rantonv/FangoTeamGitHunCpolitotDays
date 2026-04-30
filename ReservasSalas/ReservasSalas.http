@@ -1,0 +1,96 @@
+@ReservasSalas_HostAddress = http://localhost:5000
+@ContentType = application/json
+
+### Obtener todas las salas disponibles
+GET {{ReservasSalas_HostAddress}}/api/salas
+Accept: application/json
+
+###
+
+### Obtener sala específica
+GET {{ReservasSalas_HostAddress}}/api/salas/1
+Accept: application/json
+
+###
+
+### Crear una reserva exitosa
+POST {{ReservasSalas_HostAddress}}/api/reservas
+Content-Type: {{ContentType}}
+
+{
+  "salaId": 1,
+  "usuarioEmail": "juan.perez@empresa.com",
+  "usuarioNombre": "Juan Pérez",
+  "fechaHoraInicio": "2026-04-18T10:00:00Z",
+  "duracionMinutos": 60,
+  "numeroAsistentes": 8,
+  "motivo": "Reunión de planificación trimestral"
+}
+
+###
+
+### Crear reserva que excede capacidad (debe fallar con 409 Conflict)
+POST {{ReservasSalas_HostAddress}}/api/reservas
+Content-Type: {{ContentType}}
+
+{
+  "salaId": 2,
+  "usuarioEmail": "maria.garcia@empresa.com",
+  "usuarioNombre": "María García",
+  "fechaHoraInicio": "2026-04-18T14:00:00Z",
+  "duracionMinutos": 90,
+  "numeroAsistentes": 10,
+  "motivo": "Workshop de equipo"
+}
+
+###
+
+### Crear reserva con solapamiento (debe fallar con 409 Conflict)
+# Primero ejecuta la primera reserva exitosa, luego esta
+POST {{ReservasSalas_HostAddress}}/api/reservas
+Content-Type: {{ContentType}}
+
+{
+  "salaId": 1,
+  "usuarioEmail": "pedro.lopez@empresa.com",
+  "usuarioNombre": "Pedro López",
+  "fechaHoraInicio": "2026-04-18T10:30:00Z",
+  "duracionMinutos": 60,
+  "numeroAsistentes": 5,
+  "motivo": "Reunión de ventas"
+}
+
+###
+
+### Obtener todas las reservas
+GET {{ReservasSalas_HostAddress}}/api/reservas
+Accept: application/json
+
+###
+
+### Obtener reserva específica
+GET {{ReservasSalas_HostAddress}}/api/reservas/1
+Accept: application/json
+
+###
+
+### Cancelar reserva (reemplaza {id} con el ID de la reserva)
+DELETE {{ReservasSalas_HostAddress}}/api/reservas/1
+
+###
+
+### Crear reserva muy próxima para probar cancelación (falla con menos de 1 hora)
+POST {{ReservasSalas_HostAddress}}/api/reservas
+Content-Type: {{ContentType}}
+
+{
+  "salaId": 3,
+  "usuarioEmail": "ana.martinez@empresa.com",
+  "usuarioNombre": "Ana Martínez",
+  "fechaHoraInicio": "2026-04-17T17:30:00Z",
+  "duracionMinutos": 30,
+  "numeroAsistentes": 20,
+  "motivo": "Presentación urgente"
+}
+
+###
